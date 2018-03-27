@@ -47,5 +47,17 @@ public class Engine {
 		
 		return getImageName();
 	}
+	
+	public String getNewImage(int index) {
+
+		imageIndex=index;
+		
+		if(imageIndex == imagesNames.size()) {
+			imageIndex--;
+			return null;
+		}
+		
+		return getImageName();
+	}
 
 }
