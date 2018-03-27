@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JTextArea;
 import javax.swing.JButton;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
@@ -27,7 +28,7 @@ public class Frame extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setResizable(false);
 
-		ImageIcon image = new ImageIcon("renamed_data/1.jpg");
+		ImageIcon image = new ImageIcon(Constants.DATASET_NAME+"/1.jpg");
 
 		JLabel imageLabel = new JLabel(image);
 		imageLabel.setBounds(frameWidth / 2 - image.getIconWidth() / 2, 0, image.getIconWidth(), image.getIconHeight());

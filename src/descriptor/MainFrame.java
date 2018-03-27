@@ -1,6 +1,7 @@
 package descriptor;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import java.awt.Font;
 
 public class MainFrame extends JFrame {
@@ -38,7 +40,7 @@ public class MainFrame extends JFrame {
 
 	public MainFrame() {
 
-		super("Franky1000");
+		super("DataSet Descriptor");
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		getContentPane().setLayout(null);
 		setSize(frameWidth, frameHeight);
@@ -47,9 +49,12 @@ public class MainFrame extends JFrame {
 
 		engine = new Engine();
 		imageName = engine.getImageName();
-		image = new ImageIcon("renamed_data/" + imageName);
+		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+		Image  tmpImage = image.getImage();
+		tmpImage = tmpImage.getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		image = new ImageIcon(tmpImage);
 		imageLabel = new JLabel(image);
-		imageLabel.setBounds(frameWidth / 2 - 260, 25, 500, 500);
+		imageLabel.setBounds(frameWidth / 2 - 260, 30, 500, 500);
 		getContentPane().add(imageLabel);
 		
 		gotoField = new JTextField();
@@ -124,12 +129,18 @@ public class MainFrame extends JFrame {
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblName.setBounds(10, 5, 125, 15);
 		getContentPane().add(lblName);
+		
+		
+		this.setLocationRelativeTo(null);
 
 	}
 
+
 	private void updateImage() {
+		
 		String temp = imageName;
 		imageName = engine.getNewImage();
+		System.out.println(imageName);
 
 		if (imageName == null) {
 			imageName = temp;
@@ -137,9 +148,18 @@ public class MainFrame extends JFrame {
 			return;
 		}
 
-		image = new ImageIcon("renamed_data/" + imageName);
+//		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+//		imageLabel.setIcon(image);
+//		lblName.setText(imageName);
+		
+		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+		Image  tmpImage = image.getImage();
+		tmpImage = tmpImage.getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		image = new ImageIcon(tmpImage);
 		imageLabel.setIcon(image);
 		lblName.setText(imageName);
+		
+		
 		repaint();
 
 	}
@@ -154,9 +174,13 @@ public class MainFrame extends JFrame {
 			return;
 		}
 
-		image = new ImageIcon("renamed_data/" + imageName);
+		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+		Image  tmpImage = image.getImage();
+		tmpImage = tmpImage.getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		image = new ImageIcon(tmpImage);
 		imageLabel.setIcon(image);
 		lblName.setText(imageName);
+		
 		repaint();
 
 	}
