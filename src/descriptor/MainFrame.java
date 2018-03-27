@@ -1,6 +1,7 @@
 package descriptor;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -19,6 +20,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
 import java.awt.Font;
 
 public class MainFrame extends JFrame {
@@ -33,10 +35,12 @@ public class MainFrame extends JFrame {
 	private JTextField[] textFields;
 	private JLabel[] labels;
 	private JLabel lblName;
-	
+	private JTextField gotoField;
+	private JButton gotoButton;
+
 	public MainFrame() {
 
-		super("Franky1000");
+		super("DataSet Descriptor");
 		getContentPane().setBackground(Color.LIGHT_GRAY);
 		getContentPane().setLayout(null);
 		setSize(frameWidth, frameHeight);
@@ -45,27 +49,50 @@ public class MainFrame extends JFrame {
 
 		engine = new Engine();
 		imageName = engine.getImageName();
-		image = new ImageIcon("renamed_data/" + imageName);
+		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+		Image  tmpImage = image.getImage();
+		tmpImage = tmpImage.getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		image = new ImageIcon(tmpImage);
 		imageLabel = new JLabel(image);
-		imageLabel.setBounds(frameWidth / 2 - 260, 25, 500, 500);
+		imageLabel.setBounds(frameWidth / 2 - 260, 30, 500, 500);
 		getContentPane().add(imageLabel);
+		
+		gotoField = new JTextField();
+		gotoField.setBounds(150, 5, 150, 25);
+		getContentPane().add(gotoField);
+		
+		gotoButton = new JButton("go to");
+		gotoButton.setBounds(300, 5, 150, 25);
+		getContentPane().add(gotoButton);
+		gotoButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				saveText();
+				updateImage(Integer.parseInt(gotoField.getText()));
+				textArea.setText("");
+			}
+		});
+		
 
 		textFields = new JTextField[10];
 		labels = new JLabel[10];
-		String[] shortcuts = {"this","dog","spots","black","white","ears","nose","yellow","orange","brown"};
+		String[] shortcuts = { "this", "dog", "spots", "black", "white",
+				"ears", "nose", "yellow", "orange", "brown" };
 		for (int i = 0; i < textFields.length; i++) {
-			labels[i] = new JLabel(""+(i+1)%10);
+			labels[i] = new JLabel("" + (i + 1) % 10);
 			labels[i].setFont(new Font("Tahoma", Font.BOLD, 11));
-			labels[i].setBounds(63 + i *53, 535, 14, 14);
+			labels[i].setBounds(63 + i * 53, 535, 14, 14);
 			getContentPane().add(labels[i]);
-			
+
 			textFields[i] = new JTextField(shortcuts[i]);
 			textFields[i].setColumns(10);
-			textFields[i].setBounds(47 + i*53, 552, 46, 20);
+			textFields[i].setBounds(47 + i * 53, 552, 46, 20);
 			getContentPane().add(textFields[i]);
-				
+
 		}
-		
+
 
 		textArea = new JTextArea();
 		textArea.setBounds(47, 583, 580, 50);
@@ -85,25 +112,35 @@ public class MainFrame extends JFrame {
 				super.keyReleased(arg0);
 				int key = arg0.getKeyCode();
 
-				if ( KeyEvent.VK_0 <= key && key <=  KeyEvent.VK_9 ) {
-					textArea.setText(textArea.getText().replace(""+(key - KeyEvent.VK_0), "") + " " + textFields[(key - KeyEvent.VK_0 +9)%10 ].getText());
+				if (KeyEvent.VK_0 <= key && key <= KeyEvent.VK_9) {
+					textArea.setText(textArea.getText().replace(
+							"" + (key - KeyEvent.VK_0), "")
+							+ " "
+							+ textFields[(key - KeyEvent.VK_0 + 9) % 10]
+									.getText());
 				}
 
 			}
 
 		});
 		getContentPane().add(textArea);
-		
+
 		lblName = new JLabel(imageName);
 		lblName.setFont(new Font("Tahoma", Font.BOLD, 12));
 		lblName.setBounds(10, 5, 125, 15);
 		getContentPane().add(lblName);
-	
+		
+		
+		this.setLocationRelativeTo(null);
+
 	}
 
+
 	private void updateImage() {
+		
 		String temp = imageName;
 		imageName = engine.getNewImage();
+		System.out.println(imageName);
 
 		if (imageName == null) {
 			imageName = temp;
@@ -111,9 +148,39 @@ public class MainFrame extends JFrame {
 			return;
 		}
 
-		image = new ImageIcon("renamed_data/" + imageName);
+//		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+//		imageLabel.setIcon(image);
+//		lblName.setText(imageName);
+		
+		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+		Image  tmpImage = image.getImage();
+		tmpImage = tmpImage.getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		image = new ImageIcon(tmpImage);
 		imageLabel.setIcon(image);
 		lblName.setText(imageName);
+		
+		
+		repaint();
+
+	}
+	
+	private void updateImage(int index) {
+		String temp = imageName;
+		imageName = engine.getNewImage(index);
+
+		if (imageName == null) {
+			imageName = temp;
+			JOptionPane.showMessageDialog(new JFrame(), "The End");
+			return;
+		}
+
+		image = new ImageIcon(Constants.DATASET_NAME + "/" + imageName);
+		Image  tmpImage = image.getImage();
+		tmpImage = tmpImage.getScaledInstance(500, 500, Image.SCALE_SMOOTH);
+		image = new ImageIcon(tmpImage);
+		imageLabel.setIcon(image);
+		lblName.setText(imageName);
+		
 		repaint();
 
 	}
@@ -121,14 +188,19 @@ public class MainFrame extends JFrame {
 	private void saveText() {
 
 		String text = textArea.getText();
-		String path = "text/" + imageName.substring(0, imageName.indexOf(".")) + ".txt";
+		// do not append dummy lines
+		if (text.length() == 0)
+			return;
+		String path = "text/" + imageName.substring(0, imageName.indexOf("."))
+				+ ".txt";
 		File f = new File(path);
 
 		if (f.exists()) {
 
 			try {
 				text += "\n";
-				Files.write(Paths.get(path), text.getBytes(), StandardOpenOption.APPEND);
+				Files.write(Paths.get(path), text.getBytes(),
+						StandardOpenOption.APPEND);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
