@@ -31,10 +31,11 @@ public class Engine {
 				imagesNames.add(file.getName());
  			}
 		}
+		
 		Collections.sort(imagesNames);
 		
 		
-			System.out.println(imagesNames.size());
+		System.out.println(imagesNames.size());
 	}
 
 	public String getImageName() {

@@ -78,8 +78,7 @@ public class MainFrame extends JFrame {
 
 		textFields = new JTextField[10];
 		labels = new JLabel[10];
-		String[] shortcuts = { "this", "dog", "spots", "black", "white",
-				"ears", "nose", "yellow", "orange", "brown" };
+		String[] shortcuts = Constants.Shortcuts ;
 		for (int i = 0; i < textFields.length; i++) {
 			labels[i] = new JLabel("" + (i + 1) % 10);
 			labels[i].setFont(new Font("Tahoma", Font.BOLD, 11));
